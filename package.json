@@ -1,15 +1,15 @@
 {
-  "name": "project",
+  "name": "online timer",
   "version": "0.0.1",
   "devDependencies": {
     "mocha": "*",
-    "chai": "*"
-  },
-  "dependencies": {
+    "chai": "*",
     "blanket": "^1.1.7",
     "chai": "^2.3.0",
     "mocha": "^2.2.5",
     "sinon": "^1.14.1"
+  },
+  "dependencies": {
   },
   "config": {
     "blanket": {
