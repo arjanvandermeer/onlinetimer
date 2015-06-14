@@ -1,6 +1,6 @@
 "use strict";
 
-exports.Timer = function ()
+var Timer = function ()
 {
 	var counter=30000;
 	var startdate;
@@ -116,6 +116,7 @@ exports.Timer = function ()
 	}
 }
 /*
+// my cute test code
 var timer = new Timer();
 timer.countdown(5000);
 timer.setFinished(function(value){console.log("finished "+value);});
@@ -126,3 +127,7 @@ timer.setInterval(1000,function () {
 }/ *.bind(timer)* /);
 timer.start();
 */
+
+// if in node.js mode
+if (typeof exports !== 'undefined') 
+	exports.Timer=Timer;

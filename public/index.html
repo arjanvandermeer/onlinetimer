@@ -1,0 +1,68 @@
+<html>
+<head>
+<script src="../libs/timer.js"></script>
+<script>
+var t = new Timer();
+writeTime = function ( time )
+{
+	var totalSec = Math.round( time / 1000);
+	var hours = parseInt(totalSec/3600);
+	totalSec -= hours*3600;
+	var mins = parseInt(totalSec/60);
+	totalSec -= mins*60;
+	return ''+(hours>9?hours:'0'+hours)+':'+(mins>9?mins:'0'+mins)+':'+(totalSec>9?totalSec:'0'+totalSec);
+}
+parseTime = function ( input )
+{
+		var d = input.split(":");
+	
+		if ( d[1] === undefined )
+			d[1]=0;
+		if ( d[2] === undefined )
+			d[2]=0;
+		return parseInt(d[0])*60*60+parseInt(d[1])*60+parseInt(d[2]);	
+}
+start = function ( timer, fieldname)
+{
+	var field = document.getElementById(fieldname);
+	if ( field !== undefined )
+	{
+		field.disabled=true;
+		field.classList.add ( 'countdown' );
+		if ( field.classList.contains ('finished'))
+			field.classList.remove ( 'finished' );
+
+		var time = parseTime(field.value);
+		timer.setCountdown(time*1000);
+		timer.setInterval ( 1000, function(){ field.value = writeTime(timer.getRemaining());});
+		timer.setFinished ( function () { stop ( timer, fieldname ); });
+		timer.start();
+	}
+}
+pause = function ( timer, fieldname )
+{
+	timer.togglePause();
+}
+stop = function ( timer, fieldname )
+{
+	var field = document.getElementById(fieldname);
+	if ( field !== undefined )
+	{
+		field.disabled=false;
+		field.classList.remove('countdown');
+		field.classList.add('finished');
+	}
+}
+</script>
+</head>
+<body>
+<form>
+  Select a time:
+  <input id="time1" name="timer" type=time value="00:00:05" min=0:00 max=12:00 step=1>
+  <button id="time1.start" type="button" onClick="start(t,'time1');">Start</button>
+  <button id="time1.pause" type="button" onClick="pause(t, 'time1');">Pause</button>
+  <button id="time1.stop" type="button" onClick="t.stop();stop(t, 'time1');">Stop</button>
+</form>
+</body>
+</html>
+</body>
