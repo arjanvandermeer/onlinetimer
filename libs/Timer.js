@@ -65,7 +65,7 @@ var Timer = function ()
 	}
 	this.togglePause = function ()
 	{
-		if ( pausedate === undefined )
+		if ( ! this.hasPaused() )
 			this.pause();
 		else
 			this.resume();
@@ -95,6 +95,10 @@ var Timer = function ()
 	this.hasStarted = function ()
 	{
 		return startdate !== undefined && (new Date()) >= startdate;
+	}
+	this.hasPaused = function ()
+	{
+		return pausedate !== undefined;
 	}
 	this.hasFinished = function ()
 	{
