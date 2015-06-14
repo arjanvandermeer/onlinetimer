@@ -5,7 +5,7 @@
 var t = new Timer();
 writeTime = function ( time )
 {
-	var totalSec = Math.round( time / 1000);
+	var totalSec = Math.round( parseInt(time) / 1000);
 	var hours = parseInt(totalSec/3600);
 	totalSec -= hours*3600;
 	var mins = parseInt(totalSec/60);
@@ -20,7 +20,24 @@ parseTime = function ( input )
 			d[1]=0;
 		if ( d[2] === undefined )
 			d[2]=0;
-		return parseInt(d[0])*60*60+parseInt(d[1])*60+parseInt(d[2]);	
+		return (parseInt(d[0])*60*60+parseInt(d[1])*60+parseInt(d[2]))*1000;	
+}
+load = function ( timer, fieldname )
+{
+	var field = document.getElementById(fieldname);
+	if ( field !== undefined && timer !== undefined )
+	{
+		var value = localStorage.getItem(fieldname+".value");
+	field.value = writeTime(value);
+	}
+}
+store = function ( timer, fieldname )
+{
+	var field = document.getElementById(fieldname);
+	if ( field !== undefined && timer !== undefined )
+	{
+		localStorage.setItem(fieldname+".value", parseTime(field.value));
+	}	
 }
 start = function ( timer, fieldname)
 {
@@ -35,7 +52,7 @@ start = function ( timer, fieldname)
 		setFields ( fieldname, false,true, true);
 
 		var time = parseTime(field.value);
-		timer.setCountdown(time*1000);
+		timer.setCountdown(time);
 		timer.setInterval ( 1000, function(){ field.value = writeTime(timer.getRemaining());});
 		timer.setFinished ( function () { stop ( timer, fieldname, false ); });
 		timer.start();
@@ -67,6 +84,7 @@ stop = function ( timer, fieldname, stopTimer )
 		field.disabled=false;
 		field.classList.remove('countdown');
 		field.classList.add('finished');
+		load ( timer, fieldname);
 		setFields ( fieldname, true, false, false);
 	}
 }
@@ -85,13 +103,13 @@ setFields = function ( fieldname, start, pause, stop )
 }
 </script>
 </head>
-<body>
+<body onLoad="load(t, 'time1');">
 <form>
   Select a time:
-  <input id="time1" name="timer" type=time value="00:00:05" min=0:00 max=12:00 step=1>
+  <input id="time1" name="timer" type=time onChange="store(t, 'time1');" value="00:15:00" min=0:00 max=12:00 step=1>
   <button id="time1.start" type="button" onClick="start(t,'time1');">Start</button>
-  <button id="time1.pause" type="button" disabled='true' onClick="pause(t, 'time1');">Pause</button>
-  <button id="time1.stop" type="button" disabled='true' onClick="stop(t, 'time1');">Stop</button>
+  <button id="time1.pause" type="button" disabled onClick="pause(t, 'time1');">Pause</button>
+  <button id="time1.stop" type="button" disabled onClick="stop(t, 'time1');">Stop</button>
 </form>
 </body>
 </html>
