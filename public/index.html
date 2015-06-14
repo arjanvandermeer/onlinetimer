@@ -25,33 +25,63 @@ parseTime = function ( input )
 start = function ( timer, fieldname)
 {
 	var field = document.getElementById(fieldname);
-	if ( field !== undefined )
+	if ( field !== undefined && timer !== undefined )
 	{
 		field.disabled=true;
 		field.classList.add ( 'countdown' );
 		if ( field.classList.contains ('finished'))
 			field.classList.remove ( 'finished' );
 
+		setFields ( fieldname, false,true, true);
+
 		var time = parseTime(field.value);
 		timer.setCountdown(time*1000);
 		timer.setInterval ( 1000, function(){ field.value = writeTime(timer.getRemaining());});
-		timer.setFinished ( function () { stop ( timer, fieldname ); });
+		timer.setFinished ( function () { stop ( timer, fieldname, false ); });
 		timer.start();
 	}
 }
 pause = function ( timer, fieldname )
 {
-	timer.togglePause();
-}
-stop = function ( timer, fieldname )
-{
 	var field = document.getElementById(fieldname);
-	if ( field !== undefined )
+	if ( field !== undefined && timer !== undefined )
+	{
+		if ( !timer.hasPaused() )
+		{
+			field.classList.add ( 'paused' );
+			timer.pause();
+		}else{
+			field.classList.remove ('paused');
+			timer.resume();
+		}
+	}
+}
+stop = function ( timer, fieldname, stopTimer )
+{
+	if ( timer !== undefined && (stopTimer === undefined || stopTimer === true ))
+		timer.stop();
+	
+	var field = document.getElementById(fieldname);
+	if ( field !== undefined && timer !== undefined )
 	{
 		field.disabled=false;
 		field.classList.remove('countdown');
 		field.classList.add('finished');
+		setFields ( fieldname, true, false, false);
 	}
+}
+setFields = function ( fieldname, start, pause, stop )
+{
+	var startField = document.getElementById(fieldname+'.start');
+	if ( startField !== undefined )
+		startField.disabled=!start;
+	var pauseField = document.getElementById(fieldname+'.pause');
+	if ( pauseField !== undefined )
+		pauseField.disabled=!pause;
+	var stopField = document.getElementById(fieldname+'.stop');
+	if ( stopField  !== undefined )
+		stopField.disabled=!stop;
+
 }
 </script>
 </head>
@@ -60,8 +90,8 @@ stop = function ( timer, fieldname )
   Select a time:
   <input id="time1" name="timer" type=time value="00:00:05" min=0:00 max=12:00 step=1>
   <button id="time1.start" type="button" onClick="start(t,'time1');">Start</button>
-  <button id="time1.pause" type="button" onClick="pause(t, 'time1');">Pause</button>
-  <button id="time1.stop" type="button" onClick="t.stop();stop(t, 'time1');">Stop</button>
+  <button id="time1.pause" type="button" disabled='true' onClick="pause(t, 'time1');">Pause</button>
+  <button id="time1.stop" type="button" disabled='true' onClick="stop(t, 'time1');">Stop</button>
 </form>
 </body>
 </html>
